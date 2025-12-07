@@ -19,6 +19,14 @@ public class ESP32SimpleListener : MonoBehaviour
 
     void Start()
     {
+        if (Display.displays.Length > 1)
+        {
+            // Activate all secondary displays
+            for (int i = 1; i < Display.displays.Length; i++)
+            {
+                Display.displays[i].Activate();
+            }
+        }
         videoUrl = Application.dataPath + "/Content.mp4";
         StartCoroutine(ConnectAndListen());
     }
@@ -29,7 +37,7 @@ public class ESP32SimpleListener : MonoBehaviour
             Application.Quit();
         }
 
-        if (Input.GetKeyUp(KeyCode.R))
+        if (Input.GetKeyUp(KeyCode.R) || Input.GetKeyUp(KeyCode.Space))
         {
             ResetVideo();
         }
@@ -71,6 +79,19 @@ public class ESP32SimpleListener : MonoBehaviour
         }
     }
 
+    IEnumerator CheckVideoEnd()
+    {
+        yield return new WaitForSeconds(1f);
+        if(videoPlayer.isPlaying)
+        {
+            StartCoroutine(CheckVideoEnd());
+        }
+        else
+        {
+            ResetVideo();
+        }
+    }
+
     void PlayVideo()
     {
         if (videoPlayer == null) return;
@@ -78,6 +99,7 @@ public class ESP32SimpleListener : MonoBehaviour
         videoPlayer.Stop();
         videoPlayer.url = videoUrl;
         videoPlayer.Play();
+        StartCoroutine(CheckVideoEnd());
     }
 
     // Manual reset button
