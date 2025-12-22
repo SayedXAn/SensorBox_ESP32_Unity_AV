@@ -41,6 +41,11 @@ public class ESP32SimpleListener : MonoBehaviour
         {
             ResetVideo();
         }
+
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+            PlayVideo();
+        }
     }
     IEnumerator ConnectAndListen()
     {
@@ -94,7 +99,7 @@ public class ESP32SimpleListener : MonoBehaviour
 
     void PlayVideo()
     {
-        if (videoPlayer == null) return;
+        if (videoPlayer == null || videoPlayer.isPlaying) return;
         rt.Release();
         videoPlayer.Stop();
         videoPlayer.url = videoUrl;

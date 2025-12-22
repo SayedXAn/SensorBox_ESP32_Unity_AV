@@ -20,7 +20,7 @@ const unsigned long debounceMs = 400;
 
 // -------- ARGB Strip --------
 #define LED_PIN 14
-#define NUM_LEDS 300      // change for your strip length
+#define NUM_LEDS 230      // change for your strip length
 CRGB leds[NUM_LEDS];
 
 bool effectActive = false;
@@ -30,14 +30,20 @@ const unsigned long effectDuration = 2000; // ms
 // LED Effect (rainbow)
 void runEffect()
 {
-    static uint8_t hue = 0;
-    hue += 4;
-
-    for (int i = 0; i < NUM_LEDS; i++)
-    {
-        leds[i] = CHSV(hue + i * 5, 255, 255);
-    }
+    for (int b = 50; b <= 255; b++) {
+    fill_solid(leds, NUM_LEDS, CRGB::Cyan); // choose color
+    FastLED.setBrightness(b);
     FastLED.show();
+    delay(4);
+  }
+
+  // Fade OUT
+  for (int b = 255; b >= 50; b--) {
+    fill_solid(leds, NUM_LEDS, CRGB::Cyan);
+    FastLED.setBrightness(b);
+    FastLED.show();
+    delay(4);
+  }
 }
 
 void clearStrip()
